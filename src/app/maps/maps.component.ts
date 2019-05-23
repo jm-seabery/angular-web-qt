@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 declare const google: any;
 declare var qtAccessObject : any;
@@ -17,8 +18,10 @@ draggable?: boolean;
   styleUrls: ['./maps.component.css']
 })
 export class MapsComponent implements OnInit {
-
-  constructor() { }
+    displayURL;
+    constructor(private sanitizer: DomSanitizer) {
+        this.displayURL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/4VE7cFYJ7ic');
+      }
 
   ngOnInit() {
 /*
