@@ -182,5 +182,9 @@ export class MapsComponent implements OnInit {
    
    public scaleModelDown() {
     window["qtAccessObject"].ScaleModel('-10');
-   }    
+   }  
+     
+   public toggleFullscreen() {
+    window["qtAccessObject"].FullscreenToggle();
+   }
 }
