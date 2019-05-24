@@ -15,10 +15,18 @@
     <!--     Fonts and icons     -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet' type='text/css'>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR-KEY-HERE"></script>
-    <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR-KEY-HERE" async></script>
+    <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js" async></script>
     <script type="text/javascript" charset="UTF-8" src="assets/js/qwebchannel.js"></script>
     <script type="text/javascript" charset="UTF-8" src="assets/js/three.min.js"></script>
+    <script>    
+        var qtAccessObject;
+    
+        new QWebChannel(qt.webChannelTransport,
+        function(channel){
+          qtAccessObject = channel.objects.webAccessClass;      
+        });
+    </script>    
 </head>
 <body style="background: transparent">  
   <app-root>
@@ -28,14 +36,6 @@
       </svg>
     </div>
   </app-root>
-  <script>    
-    var qtAccessObject;
-
-    new QWebChannel(qt.webChannelTransport,
-    function(channel){
-      qtAccessObject = channel.objects.webAccessClass;      
-    });
-  </script>
 </body>
 
 
