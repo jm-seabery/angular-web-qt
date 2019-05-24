@@ -166,7 +166,8 @@ export class MapsComponent implements OnInit {
   public frameRateUpdate(text) {
       //alert(text);
     var el = document.getElementById("frameText");
-    el.textContent = "Framerate = " + text;
+    if( el && el.textContent )
+       el.textContent = "Framerate = " + text;
   }
 
   public callCPlusPlus() {
@@ -174,4 +175,12 @@ export class MapsComponent implements OnInit {
     window["qtAccessObject"].JavaScriptCallFunction('I am calling C++ from javascript');
     //alert("js call");
    } 
+
+   public scaleModelUp() {
+    window["qtAccessObject"].ScaleModel('10');
+   } 
+   
+   public scaleModelDown() {
+    window["qtAccessObject"].ScaleModel('-10');
+   }    
 }
