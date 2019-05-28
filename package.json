@@ -48,6 +48,7 @@
     "rxjs": "6.3.3",
     "rxjs-compat": "6.3.3",
     "three": "^0.104.0",
+    "three-full": "^17.1.0",
     "web-animations-js": "2.3.1",
     "zone.js": "0.8.26"
   },
