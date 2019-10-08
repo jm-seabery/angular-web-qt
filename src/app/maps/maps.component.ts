@@ -20,7 +20,7 @@ draggable?: boolean;
 export class MapsComponent implements OnInit {
     displayURL;
     constructor(private sanitizer: DomSanitizer) {
-        this.displayURL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/4VE7cFYJ7ic');
+        this.displayURL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/4VE7cFYJ7ic?ecver=2');
       }
 
   ngOnInit() {
