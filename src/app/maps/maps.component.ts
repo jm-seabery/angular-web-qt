@@ -130,6 +130,16 @@ export class MapsComponent implements OnInit {
 
      qtAccessObject.jsStringChanged.connect(this.jsFunc);
      qtAccessObject.frameRateStringChanged.connect(this.frameRateUpdate);
+     qtAccessObject.sendMessage.connect(this.jsMessageReceive);
+  }
+
+  public jsMessageReceive(msg) {
+    //console.log("Received: %j", msg); 
+    //console.log(JSON.stringify(msg));
+    //console.dir(msg);
+    console.log("%o", JSON.parse(msg)); 
+    //var jsonPretty = JSON.stringify(JSON.parse(msg),null,2);
+    //console.dir(JSON.parse(msg));
   }
 
   public jsFunc(text) {
