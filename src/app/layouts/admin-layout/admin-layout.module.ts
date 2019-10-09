@@ -10,6 +10,7 @@ import { TypographyComponent } from '../../typography/typography.component';
 import { IconsComponent } from '../../icons/icons.component';
 import { MapsComponent } from '../../maps/maps.component';
 import { WebglComponent } from '../../webgl/webgl.component';
+import { RTLComponent } from '../../rtl/rtl.component';
 import { NotificationsComponent } from '../../notifications/notifications.component';
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 
@@ -42,6 +43,7 @@ import {
     IconsComponent,
     MapsComponent,
     WebglComponent,
+    RTLComponent,
     NotificationsComponent,
     UpgradeComponent,
   ]
