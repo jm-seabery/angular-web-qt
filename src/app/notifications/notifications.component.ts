@@ -15,7 +15,7 @@ export class NotificationsComponent implements OnInit {
 
       $.notify({
           icon: "notifications",
-          message: "Welcome to <b>Material Dashboard</b> - a beautiful freebie for every web developer."
+          message: "Welcome to <b>AugmentedArc</b> - The industry's most realistic welding simulation solution for classroom training."
 
       },{
           type: type[color],

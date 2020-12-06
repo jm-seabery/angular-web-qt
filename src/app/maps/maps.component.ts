@@ -18,9 +18,16 @@ draggable?: boolean;
   styleUrls: ['./maps.component.css']
 })
 export class MapsComponent implements OnInit {
-    displayURL;
+    example1URL;
+    example2URL;
+    example3URL;
     constructor(private sanitizer: DomSanitizer) {
-        this.displayURL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/4VE7cFYJ7ic?ecver=2');
+        this.example1URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/xCbmFFPSF7o?ecver=2');
+        this.example2URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/OWThL97tq3k?ecver=2');
+        this.example3URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/V2fd5inbFPI?ecver=2');
+
+
+        
       }
 
   ngOnInit() {

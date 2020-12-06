@@ -13,25 +13,78 @@
             <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="callCPlusPlus()">Call C++ Message</button>
             <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="toggleFullscreen()">Toggle fullscreen</button>
         </div>
+        
         <div class="row">
+            <div class="col-md-4">
+                <div class="card card-chart">
+                    <div class="card-body">
+                        <div class="iframe-container">
+                            <iframe width="500" height="700" [src]="example1URL" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen"
+                            mozallowfullscreen="mozallowfullscreen" 
+                            msallowfullscreen="msallowfullscreen" 
+                            oallowfullscreen="oallowfullscreen" 
+                            webkitallowfullscreen="webkitallowfullscreen">
+                                <p>Your browser does not support iframes.</p>
+                            </iframe>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6 d-none d-sm-block d-md-block d-lg-none d-block d-sm-none text-center ml-auto mr-auto">
+                            <h5>The icons are visible on Desktop mode inside an iframe. Since the iframe is not working on Mobile and Tablets please visit the
+                                <a href="https://www.youtube.com/" target="_blank">Example</a>
+                            </h5>
+                        </div>
 
-                <div class="card-body">
-                    <div class="iframe-container">
-                        <iframe width="500" height="700" [src]="displayURL" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen"
-                        mozallowfullscreen="mozallowfullscreen" 
-                        msallowfullscreen="msallowfullscreen" 
-                        oallowfullscreen="oallowfullscreen" 
-                        webkitallowfullscreen="webkitallowfullscreen">
-                            <p>Your browser does not support iframes.</p>
-                        </iframe>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6 d-none d-sm-block d-md-block d-lg-none d-block d-sm-none text-center ml-auto mr-auto">
-                        <h5>The icons are visible on Desktop mode inside an iframe. Since the iframe is not working on Mobile and Tablets please visit the
-                            <a href="https://www.youtube.com/" target="_blank">Example</a>
-                        </h5>
+                        <div class="card-footer">
+                            <p>About AugmentedArc</p>
+                        </div>
                     </div>
                 </div>
-
+            </div>
+            <div class="col-md-4">
+                <div class="card card-chart">            
+                    <div class="card-body">
+                        <div class="iframe-container">
+                            <iframe width="500" height="700" [src]="example2URL" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen"
+                            mozallowfullscreen="mozallowfullscreen" 
+                            msallowfullscreen="msallowfullscreen" 
+                            oallowfullscreen="oallowfullscreen" 
+                            webkitallowfullscreen="webkitallowfullscreen">
+                                <p>Your browser does not support iframes.</p>
+                            </iframe>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6 d-none d-sm-block d-md-block d-lg-none d-block d-sm-none text-center ml-auto mr-auto">
+                            <h5>The icons are visible on Desktop mode inside an iframe. Since the iframe is not working on Mobile and Tablets please visit the
+                                <a href="https://www.youtube.com/" target="_blank">Example</a>
+                            </h5>
+                        </div>
+                        <div class="card-footer">
+                            <p>The Basics of welding</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-chart">  
+                    <div class="card-body">
+                        <div class="iframe-container">
+                            <iframe width="500" height="700" [src]="example3URL" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen"
+                            mozallowfullscreen="mozallowfullscreen" 
+                            msallowfullscreen="msallowfullscreen" 
+                            oallowfullscreen="oallowfullscreen" 
+                            webkitallowfullscreen="webkitallowfullscreen">
+                                <p>Your browser does not support iframes.</p>
+                            </iframe>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6 d-none d-sm-block d-md-block d-lg-none d-block d-sm-none text-center ml-auto mr-auto">
+                            <h5>The icons are visible on Desktop mode inside an iframe. Since the iframe is not working on Mobile and Tablets please visit the
+                                <a href="https://www.youtube.com/" target="_blank">Example</a>
+                            </h5>
+                        </div>
+                        <div class="card-footer">
+                            <p>DIY</p>
+                        </div>
+                    </div>        
+                </div>
+            </div>        
         </div>        
     </div>
 </div>
