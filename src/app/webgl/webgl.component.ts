@@ -23,6 +23,8 @@ export class WebglComponent implements OnInit {
   private timeElapsed : number = 0.0;
   private then : number = 0.0;
 
+  public app : any;
+
   constructor() { }
 
   ngOnInit() {
@@ -82,6 +84,7 @@ export class WebglComponent implements OnInit {
         this.update();
     });
 
+    (window as any).Register(this.something);
   }
 
   onResize(): void {
@@ -176,5 +179,18 @@ export class WebglComponent implements OnInit {
     return "rgb(" + mixedrgb.join(",") + ")";*/
     var val = '0x'+Math.floor(Math.random()*16777215).toString(16);
     return parseInt(val);
+  }
+
+  public CheckMessage()
+  {
+    //alert(window["myval"]); 
+    //alert((<any>window).NativeFunc());
+
+    app.jsInvokeCPlusPlus("123","xyz");
+    app.jsTransform("hello world");    
+  }
+
+  public something(msg) {
+    alert(msg + " inside Javascript reload testing for the web team")
   }
 }
