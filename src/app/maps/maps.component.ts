@@ -22,12 +22,10 @@ export class MapsComponent implements OnInit {
     example2URL;
     example3URL;
     constructor(private sanitizer: DomSanitizer) {
-        this.example1URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/xCbmFFPSF7o?ecver=2');
-        this.example2URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/OWThL97tq3k?ecver=2');
-        this.example3URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/V2fd5inbFPI?ecver=2');
-
-
-        
+        this.example1URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/s4LAAYHnbn0?ecver=2');
+        this.example2URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/X8hBKX2lgn4?ecver=2');
+        this.example3URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/OWThL97tq3k?ecver=2');
+  
       }
 
   ngOnInit() {
