@@ -186,8 +186,8 @@ export class WebglComponent implements OnInit {
     //alert(window["myval"]); 
     //alert((<any>window).NativeFunc());
 
-    app.jsInvokeCPlusPlus("123","xyz");
-    app.jsTransform("hello world");    
+    //app.jsInvokeCPlusPlus("123","xyz");
+    //app.jsTransform("hello world");    
   }
 
   public something(msg) {
