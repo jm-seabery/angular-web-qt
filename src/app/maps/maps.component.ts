@@ -133,9 +133,9 @@ export class MapsComponent implements OnInit {
     marker.setMap(map);
       */  
 
-     qtAccessObject.jsStringChanged.connect(this.jsFunc);
+/*      qtAccessObject.jsStringChanged.connect(this.jsFunc);
      qtAccessObject.frameRateStringChanged.connect(this.frameRateUpdate);
-     qtAccessObject.sendMessage.connect(this.jsMessageReceive);
+     qtAccessObject.sendMessage.connect(this.jsMessageReceive); */
   }
 
   public jsMessageReceive(msg) {
