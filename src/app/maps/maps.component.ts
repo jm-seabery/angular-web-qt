@@ -2,22 +2,269 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 declare const google: any;
-declare var qtAccessObject : any;
+declare var sld : any;
 declare var $: any;
-
-interface Marker {
-lat: number;
-lng: number;
-label?: string;
-draggable?: boolean;
+ 
+// status 
+enum FileStateStatus {
+	STATUS_EXISTS 			= "Exists",
+  STATUS_DOESNOTEXIST = "DoesNotExist",
+	STATUS_CREATED 			= "Created",
+	STATUS_NOTCREATED 	= "NotCreated",
+	STATUS_SAVED 			  = "Saved",
+	STATUS_NOTSAVED 		= "NotSaved",
+	STATUS_DELETED 			= "Deleted",
+	STATUS_NOTDELETED		= "NotDeleted"
 }
 
+// Action 
+enum FileStateAction {
+	ACTION_CHECK_EXISTS = "CheckExists",
+	ACTION_CREATE 			= "Create",
+	ACTION_SAVE 			  = "Save",
+	ACTION_DELETE 			= "Delete"
+}
+
+class FileState {
+
+	// constant api call name
+	static readonly API_CALL_NAME		= "FileState";
+
+	private Call:string = FileState.API_CALL_NAME;	/// required - Should be 'FileState'
+	Filename:string = "";							/// name of the file
+	FileSize:number = 0;							/// size of the file in bytes
+	FileData:string = "";							/// string buffer containing file data
+	ModificationDate:string = "";					/// last modification date in iso 8601 format 
+
+	static readonly FileStatus = FileStateStatus;
+  readonly FileStatus = FileState.FileStatus;
+
+	static readonly FileAction = FileStateAction;
+  readonly FileAction = FileState.FileAction;
+
+	Status:FileStateStatus;
+	Action:FileStateAction;
+
+	UserVars = [
+	];
+
+	// FIXME: this undoes type safety but does work
+	constructor(values: Object = {}) {
+		Object.assign(this, values);
+	}
+}
+
+// ####################################################################################
+class CameraProperty
+{
+	Name:string;
+	Value:string;
+};
+
+class CameraDetails
+{
+	Name:string;
+	CurrentResolution:string;
+	Position:number;
+	ResolutionList:string[];
+	PropertyList:CameraProperty[];
+};
+
+// status 
+enum CameraStateStatus {
+	STATUS_NOTCONNECTED 	= "NotConnected",
+	STATUS_CONNECTED 		= "Connected",
+	STATUS_CALIBRATED 		= "Calibrated",
+	STATUS_NOTCALIBRATED 	= "NotCalibrated",
+	STATUS_GRABBING 		= "Grabbing",
+	STATUS_RECONNECTING		= "Reconnecting"
+}
+
+// Action 
+enum CameraStateAction {
+	ACTION_CHECK 				= "Check",
+	ACTION_FLIP 				= "Flip",
+	ACTION_CHANGE_RESOLUTION 	= "ChangeResolution",
+	ACTION_CHANGE_PRESET 		= "ChangePreset"
+}
+
+class CameraState {
+
+	// constant api call name
+	static readonly API_CALL_NAME		= "CameraState";
+
+	private Call:string = CameraState.API_CALL_NAME;	/// required - Should be 'CameraState'
+
+	CameraCount:number;
+	CameraList:CameraDetails[];
+
+	static readonly CameraStatus = CameraStateStatus;
+  	readonly CameraStatus = CameraState.CameraStatus;
+
+	static readonly CameraAction = CameraStateAction;
+  	readonly CameraAction = CameraState.CameraAction;
+
+	Status:CameraStateStatus;
+	Action:CameraStateAction;
+
+	UserVars = [
+	];
+
+	// FIXME: this undoes type safety but does work
+	constructor(values: Object = {}) {
+		Object.assign(this, values);
+	}
+}
+
+// ####################################################################################
+
+// status 
+enum ProcessLaunchStatus {
+	STATUS_LAUNCHED 		= "Launched",
+	STATUS_NOTLAUNCHED 		= "NotLaunched",
+}
+
+// Action 
+enum ProcessLaunchAction {
+	ACTION_LAUNCH 			= "Launch",
+}
+
+class ProcessLaunch {
+
+	// constant api call name
+	static readonly API_CALL_NAME		= "ProcessLaunch";
+
+	private Call:string = ProcessLaunch.API_CALL_NAME;	/// required - Should be 'ProcessLaunch'
+	ProcessConfigName:string = "";						/// name of the process config
+	ProcessId:number = 0;
+
+	static readonly ProcessLaunchStatus = ProcessLaunchStatus;
+  	readonly ProcessLaunchStatus = ProcessLaunch.ProcessLaunchStatus;
+
+	static readonly ProcessLaunchAction = ProcessLaunchAction;
+  	readonly ProcessLaunchAction = ProcessLaunch.ProcessLaunchAction;
+
+	Status:ProcessLaunchStatus;
+	Action:ProcessLaunchAction;
+
+	UserVars = [
+	];
+
+	// FIXME: this undoes type safety but does work
+	constructor(values: Object = {}) {
+		Object.assign(this, values);
+	}
+}
+
+// status 
+enum ProcessStateStatus {
+	STATUS_RUNNING 			= "Running",
+	STATUS_TERMINATED 		= "Terminated",
+	STATUS_NOTTERMINATED 	= "NotTerminated",
+	STATUS_UNKNOWN			= "Unknown"
+}
+
+// Action 
+enum ProcessStateAction {
+	ACTION_CHECK 			= "Check",
+	ACTION_TERMINATE		= "Terminate"
+}
+// ####################################################################################
+class ProcessState {
+
+	// constant api call name
+	static readonly API_CALL_NAME		= "ProcessState";
+
+	private Call:string = ProcessState.API_CALL_NAME;	/// required - Should be 'ProcessState'
+
+	ProcessId:number = 0;
+
+	static readonly ProcessStateStatus = ProcessStateStatus;
+  	readonly ProcessStateStatus = ProcessState.ProcessStateStatus;
+
+	static readonly ProcessStateAction = ProcessStateAction;
+  	readonly ProcessStateAction = ProcessState.ProcessStateAction;
+
+	Status:ProcessStateStatus;
+	Action:ProcessStateAction;
+
+	UserVars = [
+	];
+
+	// FIXME: this undoes type safety but does work
+	constructor(values: Object = {}) {
+		Object.assign(this, values);
+	}
+}
+// ####################################################################################
+class NetworkInterfaceCommon
+{
+	Address:string;
+	Netmask:string;
+	IsP2P: boolean;
+	DestinationAddress: string;
+	BroadcastAddress: string;
+};
+
+class NetworkInterfaceData
+{
+	HasIP6:boolean;  
+	Name:string;
+  MacAddress:string;     
+	IP4Data:NetworkInterfaceCommon;
+	IP6Data:NetworkInterfaceCommon;
+};
+
+// status 
+enum NetworkInterfaceStateStatus {
+
+	STATUS_UPDATED 		= "Updated",
+	STATUS_NOTUPDATED	= "NotUpdated"
+}
+
+// Action 
+enum NetworkInterfaceStateAction {
+	ACTION_UPDATE 				= "Update",
+
+}
+
+class NetworkInterfaceState {
+
+	// constant api call name
+	static readonly API_CALL_NAME		= "NetworkInterfaceState";
+
+	private Call:string = NetworkInterfaceState.API_CALL_NAME;	/// required - Should be 'NetworkInterfaceState'
+
+	InterfaceCount:number;
+	InterfaceList:NetworkInterfaceData[];
+
+	static readonly InterfaceStatus = NetworkInterfaceStateStatus;
+  	readonly InterfaceStatus = NetworkInterfaceState.InterfaceStatus;
+
+	static readonly InterfaceAction = NetworkInterfaceStateAction;
+  	readonly InterfaceAction = NetworkInterfaceState.InterfaceAction;
+
+	Status:NetworkInterfaceStateStatus;
+	Action:NetworkInterfaceStateAction;
+
+	UserVars = [
+	];
+
+	// FIXME: this undoes type safety but does work
+	constructor(values: Object = {}) {
+		Object.assign(this, values);
+	}
+}
+// ####################################################################################
 @Component({
   selector: 'app-maps',
   templateUrl: './maps.component.html',
   styleUrls: ['./maps.component.css']
 })
 export class MapsComponent implements OnInit {
+
+    lastProcessId:number = -999;
+
     example1URL;
     example2URL;
     example3URL;
@@ -26,180 +273,150 @@ export class MapsComponent implements OnInit {
         this.example2URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/X8hBKX2lgn4?ecver=2');
         this.example3URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/OWThL97tq3k?ecver=2');
   
+        // register functions the c++ side can call to the local class functions
+        (window as any).RegisterJavascriptFunction("ApplicationToWebMessage", (msg:any) => {
+          this.NativeMessage(msg);
+        });
       }
 
   ngOnInit() {
-/*
-    var myLatlng = new google.maps.LatLng(40.748817, -73.985428);
-    var mapOptions = {
-        zoom: 13,
-        center: myLatlng,
-        scrollwheel: false, //we disable de scroll over the map, it is a really annoing when you scroll through page
-        styles: [{
-            "featureType": "water",
-            "stylers": [{
-                "saturation": 43
-            }, {
-                "lightness": -11
-            }, {
-                "hue": "#0088ff"
-            }]
-        }, {
-            "featureType": "road",
-            "elementType": "geometry.fill",
-            "stylers": [{
-                "hue": "#ff0000"
-            }, {
-                "saturation": -100
-            }, {
-                "lightness": 99
-            }]
-        }, {
-            "featureType": "road",
-            "elementType": "geometry.stroke",
-            "stylers": [{
-                "color": "#808080"
-            }, {
-                "lightness": 54
-            }]
-        }, {
-            "featureType": "landscape.man_made",
-            "elementType": "geometry.fill",
-            "stylers": [{
-                "color": "#ece2d9"
-            }]
-        }, {
-            "featureType": "poi.park",
-            "elementType": "geometry.fill",
-            "stylers": [{
-                "color": "#ccdca1"
-            }]
-        }, {
-            "featureType": "road",
-            "elementType": "labels.text.fill",
-            "stylers": [{
-                "color": "#767676"
-            }]
-        }, {
-            "featureType": "road",
-            "elementType": "labels.text.stroke",
-            "stylers": [{
-                "color": "#ffffff"
-            }]
-        }, {
-            "featureType": "poi",
-            "stylers": [{
-                "visibility": "off"
-            }]
-        }, {
-            "featureType": "landscape.natural",
-            "elementType": "geometry.fill",
-            "stylers": [{
-                "visibility": "on"
-            }, {
-                "color": "#b8cb93"
-            }]
-        }, {
-            "featureType": "poi.park",
-            "stylers": [{
-                "visibility": "on"
-            }]
-        }, {
-            "featureType": "poi.sports_complex",
-            "stylers": [{
-                "visibility": "on"
-            }]
-        }, {
-            "featureType": "poi.medical",
-            "stylers": [{
-                "visibility": "on"
-            }]
-        }, {
-            "featureType": "poi.business",
-            "stylers": [{
-                "visibility": "simplified"
-            }]
-        }]
+  }
+  
+  setProcessId(processId:number ): void{
+    this.lastProcessId = processId;
+  }
 
-    };
-    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+  onFileStateExample(event: any) {
 
-    var marker = new google.maps.Marker({
-        position: myLatlng,
-        title: "Hello World!"
+    const fileStateClass = new FileState({"Filename": "/home/john/Documents/test.txt"});
+    fileStateClass.Action = FileState.FileAction.ACTION_CHECK_EXISTS;
+    fileStateClass.UserVars.push({
+        "Name" : "Var2", 
+        "Value" : "Adding another var I need to track"
     });
 
-    // To add the marker to the map, call setMap();
-    marker.setMap(map);
-      */  
+    //console.log(testClassVar);
 
-/*      qtAccessObject.jsStringChanged.connect(this.jsFunc);
-     qtAccessObject.frameRateStringChanged.connect(this.frameRateUpdate);
-     qtAccessObject.sendMessage.connect(this.jsMessageReceive); */
+    sld.SendMessageToApp(JSON.stringify(fileStateClass));
+    
   }
 
-  public jsMessageReceive(msg) {
-    //console.log("Received: %j", msg); 
-    //console.log(JSON.stringify(msg));
-    //console.dir(msg);
-    console.log("%o", JSON.parse(msg)); 
-    //var jsonPretty = JSON.stringify(JSON.parse(msg),null,2);
-    //console.dir(JSON.parse(msg));
-  }
+  onFileStateSaveExample(event: any) {
 
-  public jsFunc(text) {
-
-    const type = ['','info','success','warning','danger'];
-
-    const color = Math.floor((Math.random() * 4) + 1);
-    const from = 'bottom';
-    const align = 'center';
-    $.notify({
-        icon: "notifications",
-        message: text
-
-    },{
-        type: type[color],
-        timer: 4000,
-        placement: {
-            from: from,
-            align: align
-        },
-        template: '<div data-notify="container" class="col-xl-4 col-lg-4 col-11 col-sm-4 col-md-4 alert alert-{0} alert-with-icon" role="alert">' +
-          '<button mat-button  type="button" aria-hidden="true" class="close mat-button" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
-          '<i class="material-icons" data-notify="icon">notifications</i> ' +
-          '<span data-notify="title">{1}</span> ' +
-          '<span data-notify="message">{2}</span>' +
-          '<div class="progress" data-notify="progressbar">' +
-            '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-          '</div>' +
-          //'<a href="{3}" target="{4}" data-notify="url"></a>' +
-        '</div>'
+    const fileStateClass = new FileState({"Filename": "/home/john/Documents/somefile.txt"});
+    fileStateClass.Action = FileState.FileAction.ACTION_SAVE;
+    fileStateClass.FileData = "Put this string into a file";
+    fileStateClass.UserVars.push({
+        "Name" : "SaveTracker", 
+        "Value" : "Adding another var I need to track"
     });
+
+    //console.log(testClassVar);
+
+    sld.SendMessageToApp(JSON.stringify(fileStateClass));
+    
   }
 
-  public frameRateUpdate(text) {
-      //alert(text);
-    var el = document.getElementById("frameText");
-    if( el && el.textContent )
-       el.textContent = "Framerate = " + text;
+  onCameraStateExample(event: any) {
+    const testClassVar = new CameraState();
+    testClassVar.Action = CameraState.CameraAction.ACTION_CHECK;
+    testClassVar.UserVars.push({
+        "Name" : "CameraVar", 
+        "Value" : "This is a camera request"
+    });
+
+    //console.log(testClassVar);
+
+    sld.SendMessageToApp(JSON.stringify(testClassVar));
+    
   }
 
-  public callCPlusPlus() {
-    //myObj.jscallme();
-    window["qtAccessObject"].JavaScriptCallFunction('I am calling C++ from javascript');
-    //alert("js call");
-   } 
+  onProcessLaunch(event: any) {
+    const testClassVar = new ProcessLaunch();
+    testClassVar.Action = ProcessLaunch.ProcessLaunchAction.ACTION_LAUNCH;
+    testClassVar.ProcessConfigName = "launch-1";
+    testClassVar.UserVars.push({
+        "Name" : "LaunchVar", 
+        "Value" : "This is a process launch request"
+    });
 
-   public scaleModelUp() {
-    window["qtAccessObject"].ScaleModel('10');
-   } 
-   
-   public scaleModelDown() {
-    window["qtAccessObject"].ScaleModel('-10');
-   }  
-     
-   public toggleFullscreen() {
-    window["qtAccessObject"].FullscreenToggle();
-   }
-}
+    //console.log(testClassVar);
+
+    sld.SendMessageToApp(JSON.stringify(testClassVar));
+    
+  }
+
+  onProcessState(event: any) {
+
+    const testClassVar = new ProcessState();
+    testClassVar.Action = ProcessState.ProcessStateAction.ACTION_TERMINATE;
+    testClassVar.ProcessId = this.lastProcessId;
+    testClassVar.UserVars.push({
+        "Name" : "ProcessStateVar", 
+        "Value" : "This is a process state request"
+    });
+
+    //console.log(testClassVar);
+
+    sld.SendMessageToApp(JSON.stringify(testClassVar));
+  }
+
+  onNetworkInterfaceExample(event: any) {
+    const testClassVar = new NetworkInterfaceState();
+    testClassVar.Action = NetworkInterfaceState.InterfaceAction.ACTION_UPDATE;
+    testClassVar.UserVars.push({
+        "Name" : "NetworkStateVar", 
+        "Value" : "This is a network state request"
+    });
+
+    //console.log(testClassVar);
+
+    sld.SendMessageToApp(JSON.stringify(testClassVar));
+    
+  }
+
+  NativeMessage(msg) {
+    var nativeMsg = JSON.parse(msg);
+    //console.log("%o", nativeMsg);
+
+    if( nativeMsg.Call == FileState.API_CALL_NAME)
+    {
+      const fileStateClass = new FileState(nativeMsg);
+      console.log("Output %o", fileStateClass);
+      if(fileStateClass.Action == FileState.FileAction.ACTION_CREATE &&
+        fileStateClass.Status == FileState.FileStatus.STATUS_CREATED )
+        {
+            // file was created successfully
+        }
+    }
+
+    if( nativeMsg.Call == CameraState.API_CALL_NAME)
+    {
+      const testClassVar = new CameraState(nativeMsg);
+      console.log("Output %o", testClassVar);
+    }
+
+    if( nativeMsg.Call == ProcessLaunch.API_CALL_NAME)
+    {
+      const testClassVar = new ProcessLaunch(nativeMsg);
+      console.log("Output %o", testClassVar);
+
+      if( testClassVar.Status == testClassVar.ProcessLaunchStatus.STATUS_LAUNCHED)
+        this.setProcessId(testClassVar.ProcessId);
+      
+        console.log("this.lastProcessId  %d", this.lastProcessId );
+    }
+
+    if( nativeMsg.Call == ProcessState.API_CALL_NAME)
+    {
+      const testClassVar = new ProcessState(nativeMsg);
+      console.log("Output %o", testClassVar);
+    }
+
+    if( nativeMsg.Call == NetworkInterfaceState.API_CALL_NAME)
+    {
+      const testClassVar = new NetworkInterfaceState(nativeMsg);
+      console.log("Output %o", testClassVar);
+    }    
+  }
+} 
