@@ -256,6 +256,43 @@ class NetworkInterfaceState {
 	}
 }
 // ####################################################################################
+// status 
+enum DeviceDetailsStateStatus {
+	STATUS_UPDATED		= "Updated",
+	STATUS_NOTUPDATED 	= "NotUpdated",
+}
+
+// Action 
+enum DeviceDetailsStateAction {
+	ACTION_UPDATE			= "Update",
+}
+
+class DeviceDetailsState {
+
+	// constant api call name
+	static readonly API_CALL_NAME		= "DeviceDetailsState";
+
+	private Call:string = DeviceDetailsState.API_CALL_NAME;	/// required - Should be 'DeviceDetailsState'
+
+	static readonly DeviceDetailsStateStatus = DeviceDetailsStateStatus;
+  	readonly DeviceDetailsStateStatus = DeviceDetailsState.DeviceDetailsStateStatus;
+
+	static readonly DeviceDetailsStateAction = DeviceDetailsStateAction;
+  	readonly DeviceDetailsStateAction = DeviceDetailsState.DeviceDetailsStateAction;
+
+	Status:DeviceDetailsStateStatus;
+	Action:DeviceDetailsStateAction;
+
+	UserVars = [
+	];
+
+	// FIXME: this undoes type safety but does work
+	constructor(values: Object = {}) {
+		Object.assign(this, values);
+	}
+}
+// ####################################################################################
+
 @Component({
   selector: 'app-maps',
   templateUrl: './maps.component.html',
@@ -375,6 +412,20 @@ export class MapsComponent implements OnInit {
     
   }
 
+  onDeviceDetailsExample(event: any) {
+    const testClassVar = new DeviceDetailsState();
+    testClassVar.Action = DeviceDetailsState.DeviceDetailsStateAction.ACTION_UPDATE;
+    testClassVar.UserVars.push({
+        "Name" : "DeviceDetailsStateVar", 
+        "Value" : "This is a device details state request"
+    });
+
+    //console.log(testClassVar);
+
+    sld.SendMessageToApp(JSON.stringify(testClassVar));
+    
+  }
+
   NativeMessage(msg) {
     var nativeMsg = JSON.parse(msg);
     //console.log("%o", nativeMsg);
@@ -417,6 +468,12 @@ export class MapsComponent implements OnInit {
     {
       const testClassVar = new NetworkInterfaceState(nativeMsg);
       console.log("Output %o", testClassVar);
-    }    
+    }  
+	
+    if( nativeMsg.Call == DeviceDetailsState.API_CALL_NAME)
+    {
+      const testClassVar = new DeviceDetailsState(nativeMsg);
+      console.log("Output %o", testClassVar);
+    } 
   }
 } 
