@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { prependListener } from 'process';
 
 declare const google: any;
 declare var sld : any;
@@ -55,10 +56,17 @@ class FileState {
 }
 
 // ####################################################################################
+
+/// CameraProperty - is used to list the current properties on a camera along with the valid range and value type
+/// This class is used for detailing current state and should be used when request a change of a property through 'PropertyChangeRequests'
 class CameraProperty
 {
-	Name:string;
-	Value:string;
+	Name:string;			/// name of the property
+	Value:string;			/// current/change value
+	ValueType:string;		/// value data type (not used in 'PropertyChangeRequests')
+	MinValue:string;		/// minimum value for this property (not used in 'PropertyChangeRequests')
+	MaxValue:string;		/// maximum value for this property (not used in 'PropertyChangeRequests')
+	Position:number;		/// Camera position value
 };
 
 class CameraDetails
@@ -77,13 +85,23 @@ enum CameraStateStatus {
 	STATUS_CALIBRATED 		= "Calibrated",
 	STATUS_NOTCALIBRATED 	= "NotCalibrated",
 	STATUS_GRABBING 		= "Grabbing",
-	STATUS_RECONNECTING		= "Reconnecting"
+	STATUS_RECONNECTING		= "Reconnecting",
+
+	STATUS_FLIPPED			= "Flipped",
+	STATUS_NOTFLIPPED		= "NotFlipped",
+	STATUS_ROTATED			= "Rotated",
+	STATUS_NOTROTATED		= "NotRotated",
+	STATUS_CHANGEDRESOLUTION		= "ChangedResolution",
+	STATUS_NOTCHANGEDRESOLUTION		= "NotChangedResolution",
+	STATUS_CHANGEDPRESET			= "ChangedPreset",
+	STATUS_NOTCHANGEDPRESET			= "NotChangedPreset",
 }
 
 // Action 
 enum CameraStateAction {
 	ACTION_CHECK 				= "Check",
 	ACTION_FLIP 				= "Flip",
+	ACTION_ROTATE 				= "Rotate",
 	ACTION_CHANGE_RESOLUTION 	= "ChangeResolution",
 	ACTION_CHANGE_PRESET 		= "ChangePreset"
 }
@@ -97,6 +115,8 @@ class CameraState {
 
 	CameraCount:number;
 	CameraList:CameraDetails[];
+
+	PropertyChangeRequests:CameraProperty[];
 
 	static readonly CameraStatus = CameraStateStatus;
   	readonly CameraStatus = CameraState.CameraStatus;
@@ -115,6 +135,7 @@ class CameraState {
 		Object.assign(this, values);
 	}
 }
+
 
 // ####################################################################################
 
@@ -328,7 +349,7 @@ export class MapsComponent implements OnInit {
     const fileStateClass = new FileState({"Filename": "/home/john/Documents/test.txt"});
     fileStateClass.Action = FileState.FileAction.ACTION_CHECK_EXISTS;
     fileStateClass.UserVars.push({
-        "Name" : "Var2", 
+        "Name" : "Track", 
         "Value" : "Adding another var I need to track"
     });
 
@@ -360,6 +381,36 @@ export class MapsComponent implements OnInit {
     testClassVar.UserVars.push({
         "Name" : "CameraVar", 
         "Value" : "This is a camera request"
+    });
+
+    //console.log(testClassVar);
+
+    sld.SendMessageToApp(JSON.stringify(testClassVar));
+    
+  }
+
+  onCameraStatePropertyUpdateExample(event: any) {
+    const testClassVar = new CameraState();
+    testClassVar.Action = CameraState.CameraAction.ACTION_CHANGE_PRESET;
+	testClassVar.PropertyChangeRequests = [];
+
+	const propertyUpdate1 = new CameraProperty();
+	propertyUpdate1.Name = "Temperature";
+	propertyUpdate1.Value = "9191";
+	propertyUpdate1.Position = 2;
+
+	testClassVar.PropertyChangeRequests.push(propertyUpdate1);
+
+	const propertyUpdate2 = new CameraProperty();
+	propertyUpdate2.Name = "Intensity";
+	propertyUpdate2.Value = "3";
+	propertyUpdate2.Position = 1;
+
+	testClassVar.PropertyChangeRequests.push(propertyUpdate2);
+
+    testClassVar.UserVars.push({
+        "Name" : "CameraVar2", 
+        "Value" : "This is a property update request"
     });
 
     //console.log(testClassVar);
@@ -432,13 +483,32 @@ export class MapsComponent implements OnInit {
 
     if( nativeMsg.Call == FileState.API_CALL_NAME)
     {
-      const fileStateClass = new FileState(nativeMsg);
+      /*const fileStateClass = new FileState(nativeMsg);
       console.log("Output %o", fileStateClass);
       if(fileStateClass.Action == FileState.FileAction.ACTION_CREATE &&
         fileStateClass.Status == FileState.FileStatus.STATUS_CREATED )
         {
             // file was created successfully
-        }
+        }*/
+		const fileStateClass = new FileState(nativeMsg);
+		if(fileStateClass.Action == FileState.FileAction.ACTION_CHECK_EXISTS ) {
+		  if( fileStateClass.Status == FileState.FileStatus.STATUS_EXISTS ) {
+			// file does exist
+			
+			// various data should now be filled
+			console.log("FileSize: ", fileStateClass.FileSize);
+			console.log("ModificationDate: ", fileStateClass.ModificationDate);
+			
+			// you can check for your tracking variable
+			if( fileStateClass.UserVars.some(v => v.Name === 'Track')) {
+				const foundVar = fileStateClass.UserVars.find(v => v.Name === 'Track');
+				console.log("Track Var: ", foundVar);
+			}
+		  }
+		  else if( fileStateClass.Status == FileState.FileStatus.STATUS_DOESNOTEXIST ) {
+			// file does not exist
+		  }
+		}		
     }
 
     if( nativeMsg.Call == CameraState.API_CALL_NAME)
