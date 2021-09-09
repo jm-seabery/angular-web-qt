@@ -10,7 +10,7 @@
             <p>Your browser does not support iframes.</p>
         </iframe>
     </div> 
-    <div class="example-button-container" >
+    <div #FileStateDiv id="example" class="example-button-container" >
         <button mat-raised-button color="primary" (click)="onFileStateExample($event);">Test FileState</button>
      </div>
 
@@ -41,4 +41,8 @@
      <div class="example-button-container" >
          <button mat-raised-button color="primary" (click)="onDeviceDetailsExample($event);">Test Device Details State</button>
    </div>  
+   <div class="example-button-container" >
+      <button id="buttonExample" mat-raised-button color="primary" (click)="onElementPositionExample($event);">Test Element Position</button>
+   </div>  
+ 
 </div>

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { prependListener } from 'process';
+import { getElementOffset } from "./ElementUtility";
 
 declare const google: any;
 declare var sld : any;
@@ -177,6 +178,7 @@ class ProcessLaunch {
 	}
 }
 
+// ####################################################################################
 // status 
 enum ProcessStateStatus {
 	STATUS_RUNNING 			= "Running",
@@ -190,7 +192,7 @@ enum ProcessStateAction {
 	ACTION_CHECK 			= "Check",
 	ACTION_TERMINATE		= "Terminate"
 }
-// ####################################################################################
+
 class ProcessState {
 
 	// constant api call name
@@ -314,6 +316,46 @@ class DeviceDetailsState {
 }
 // ####################################################################################
 
+// status 
+enum PageElementStateStatus {
+	STATUS_UPDATED 			= "Updated",
+	STATUS_UNKNOWN			= "Unknown"
+}
+
+// Action 
+enum PageElementStateAction {
+	ACTION_UPDATE			= "Update"
+}
+
+class PageElementState {
+
+	// constant api call name
+	static readonly API_CALL_NAME		= "PageElementState";
+
+	private Call:string = PageElementState.API_CALL_NAME;	/// required - Should be 'PageElementState'
+
+	ElementName:string = "";
+	ElementType:string = "";
+
+	static readonly PageElementStateStatus = PageElementStateStatus;
+  	readonly PageElementStateStatus = PageElementState.PageElementStateStatus;
+
+	static readonly PageElementStateAction = PageElementStateAction;
+  	readonly PageElementStateAction = PageElementState.PageElementStateAction;
+
+	Status:PageElementStateStatus;
+	Action:PageElementStateAction;
+
+	UserVars = [
+	];
+
+	// FIXME: this undoes type safety but does work
+	constructor(values: Object = {}) {
+		Object.assign(this, values);
+	}
+}
+// ####################################################################################
+
 @Component({
   selector: 'app-maps',
   templateUrl: './maps.component.html',
@@ -322,6 +364,7 @@ class DeviceDetailsState {
 export class MapsComponent implements OnInit {
 
     lastProcessId:number = -999;
+	@ViewChild('FileStateDiv') fileStateDiv: ElementRef;
 
     example1URL;
     example2URL;
@@ -477,6 +520,41 @@ export class MapsComponent implements OnInit {
     
   }
 
+  onElementPositionExample(event: any) {
+
+
+
+	var bodyRect = document.body.getBoundingClientRect();
+	var	elemRect:DOMRect = this.fileStateDiv.nativeElement.getBoundingClientRect();
+	var	offset   = elemRect.top - bodyRect.top;
+
+		console.log("Element Bounding is %o", {
+			top: elemRect.top,
+			right: elemRect.right,
+			bottom: elemRect.bottom,
+			left: elemRect.left,
+			width: elemRect.width,
+			height: elemRect.height,
+			x: elemRect.x,
+			y: elemRect.y
+		  } );
+		
+		function getOffset( el ) {
+			var _x = 0;
+			var _y = 0;
+			while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+				_x += el.offsetLeft - el.scrollLeft;
+				_y += el.offsetTop - el.scrollTop;
+				el = el.offsetParent;
+			}
+			return { top: _y, left: _x };
+		}
+
+		var testOfffset = getOffset( this.fileStateDiv.nativeElement );
+
+		console.log("Element Offset is %o", testOfffset );
+  }
+
   NativeMessage(msg) {
     var nativeMsg = JSON.parse(msg);
     //console.log("%o", nativeMsg);
@@ -544,6 +622,39 @@ export class MapsComponent implements OnInit {
     {
       const testClassVar = new DeviceDetailsState(nativeMsg);
       console.log("Output %o", testClassVar);
+    } 
+
+	if( nativeMsg.Call == PageElementState.API_CALL_NAME)
+    {
+      const testClassVar = new PageElementState(nativeMsg);
+      console.log("Output %o", testClassVar);
+
+	  var element = (<HTMLElement>document.getElementById('buttonExample'));
+	  var directRect = element.getBoundingClientRect();
+
+	  console.log("Element Bounding by name is %o", {
+		  top: directRect.top,
+		  right: directRect.right,
+		  bottom: directRect.bottom,
+		  left: directRect.left,
+		  width: directRect.width,
+		  height: directRect.height
+		} );	
+
+		testClassVar.UserVars.push({
+			"Name" : "BoundingRect", 
+			"Value" : JSON.stringify({
+				top: directRect.top,
+				right: directRect.right,
+				bottom: directRect.bottom,
+				left: directRect.left,
+				width: directRect.width,
+				height: directRect.height
+			  })
+		});
+
+	  // fill the request and send it back
+	  sld.SendMessageToApp(JSON.stringify(testClassVar));
     } 
   }
 } 
