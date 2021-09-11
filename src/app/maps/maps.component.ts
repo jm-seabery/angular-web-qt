@@ -381,6 +381,69 @@ export class MapsComponent implements OnInit {
       }
 
   ngOnInit() {
+		// The DOM node to observe
+	const target = document.getElementById("buttonExample");
+
+	// Callback function when changes occurs
+	function callback(mutationRecord, observer) {
+		console.log("Number of mutations : ", mutationRecord.length);
+		for (let i = 0, len = mutationRecord.length; i < len; i += 1) {
+			console.log("target : ", mutationRecord[i].target);
+			console.log("type : ", mutationRecord[i].type);
+			console.log("attributeName : ", mutationRecord[i].attributeName);
+			console.log("oldValue : ", mutationRecord[i].oldValue);
+		}
+		const testClassVar = new PageElementState();
+
+		console.log("Output %o", testClassVar);
+  
+		//var element = (<HTMLElement>document.getElementById('buttonExample'));
+  
+		//if( element != null ) {
+		  var directRect = mutationRecord[0].target.getBoundingClientRect();
+  
+		  console.log("Element Bounding by name is %o", {
+			  top: directRect.top,
+			  right: directRect.right,
+			  bottom: directRect.bottom,
+			  left: directRect.left,
+			  width: directRect.width,
+			  height: directRect.height
+			  } );	
+  
+		  testClassVar.UserVars.push({
+			  "Name" : "BoundingRect", 
+			  "Value" : JSON.stringify({
+				  top: directRect.top,
+				  right: directRect.right,
+				  bottom: directRect.bottom,
+				  left: directRect.left,
+				  width: directRect.width,
+				  height: directRect.height
+			  })
+		  });
+		  testClassVar.Action = PageElementState.PageElementStateAction.ACTION_UPDATE;
+		  testClassVar.Status = PageElementState.PageElementStateStatus.STATUS_UPDATED;
+  
+		  // fill the request and send it back
+		  sld.SendMessageToApp(JSON.stringify(testClassVar));
+
+	}
+
+	// Create a new instance of MutationObserver with callback in params
+	const observer = new MutationObserver(callback);
+
+	// Setup config
+	const config = {
+		childList: true,
+		attributes: true,
+		attributeOldValue: true,
+		characterData: true,
+		subtree: true,
+	};
+
+	// When everything is ready, we just observe our target
+	observer.observe(target, config);
   }
   
   setProcessId(processId:number ): void{
