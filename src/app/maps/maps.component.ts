@@ -609,6 +609,9 @@ export class MapsComponent implements OnInit {
     if( nativeMsg.Call == ProcessState.API_CALL_NAME)
     {
       const testClassVar = new ProcessState(nativeMsg);
+	  testClassVar.Action = ProcessState.ProcessStateAction.ACTION_TERMINATE;
+	  testClassVar.ProcessId = this.lastProcessId;
+
       console.log("Output %o", testClassVar);
     }
 
@@ -627,19 +630,22 @@ export class MapsComponent implements OnInit {
 	if( nativeMsg.Call == PageElementState.API_CALL_NAME)
     {
       const testClassVar = new PageElementState(nativeMsg);
+
       console.log("Output %o", testClassVar);
 
 	  var element = (<HTMLElement>document.getElementById('buttonExample'));
-	  var directRect = element.getBoundingClientRect();
 
-	  console.log("Element Bounding by name is %o", {
-		  top: directRect.top,
-		  right: directRect.right,
-		  bottom: directRect.bottom,
-		  left: directRect.left,
-		  width: directRect.width,
-		  height: directRect.height
-		} );	
+	  //if( element != null ) {
+		var directRect = element.getBoundingClientRect();
+
+		console.log("Element Bounding by name is %o", {
+			top: directRect.top,
+			right: directRect.right,
+			bottom: directRect.bottom,
+			left: directRect.left,
+			width: directRect.width,
+			height: directRect.height
+			} );	
 
 		testClassVar.UserVars.push({
 			"Name" : "BoundingRect", 
@@ -650,11 +656,19 @@ export class MapsComponent implements OnInit {
 				left: directRect.left,
 				width: directRect.width,
 				height: directRect.height
-			  })
+			})
 		});
+		testClassVar.Status = PageElementState.PageElementStateStatus.STATUS_UPDATED;
 
-	  // fill the request and send it back
-	  sld.SendMessageToApp(JSON.stringify(testClassVar));
-    } 
+		// fill the request and send it back
+		sld.SendMessageToApp(JSON.stringify(testClassVar));
+	//}
+	//else {
+	//	testClassVar.Status = PageElementState.PageElementStateStatus.STATUS_UNKNOWN;
+		//testClassVar.Message = "Not Found";
+		// fill the request and send it back
+	//	sld.SendMessageToApp(JSON.stringify(testClassVar));
+	//} 
   }
+ }
 } 
