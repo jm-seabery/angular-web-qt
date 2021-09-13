@@ -1,5 +1,8 @@
 import { Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+
 import { prependListener } from 'process';
 import { getElementOffset } from "./ElementUtility";
 
@@ -364,16 +367,23 @@ class PageElementState {
 export class MapsComponent implements OnInit {
 
     lastProcessId:number = -999;
+
+	paramsSub: Subscription;
+
 	@ViewChild('FileStateDiv') fileStateDiv: ElementRef;
 
     example1URL;
     example2URL;
     example3URL;
-    constructor(private sanitizer: DomSanitizer) {
+    constructor(private sanitizer: DomSanitizer, activeRoute: ActivatedRoute) {
         this.example1URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/s4LAAYHnbn0?ecver=2');
         this.example2URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/X8hBKX2lgn4?ecver=2');
         this.example3URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/OWThL97tq3k?ecver=2');
   
+		activeRoute.params.subscribe(val => {
+			this.trackComponent();
+		});
+
         // register functions the c++ side can call to the local class functions
         (window as any).RegisterJavascriptFunction("ApplicationToWebMessage", (msg:any) => {
           this.NativeMessage(msg);
@@ -381,52 +391,64 @@ export class MapsComponent implements OnInit {
       }
 
   ngOnInit() {
-		// The DOM node to observe
+	this.trackComponent();
+        // ...
+        //this.paramsSub = this.activeRoute.params.subscribe(val => {
+            // Handle param values here
+        //});		
+  }
+  
+  ngAfterViewInit() {
+
+  }
+
+  trackComponent() {
+	// The DOM node to observe
 	const target = document.getElementById("buttonExample");
 
 	// Callback function when changes occurs
 	function callback(mutationRecord, observer) {
-		console.log("Number of mutations : ", mutationRecord.length);
+		//console.log("Number of mutations : ", mutationRecord.length);
 		for (let i = 0, len = mutationRecord.length; i < len; i += 1) {
-			console.log("target : ", mutationRecord[i].target);
-			console.log("type : ", mutationRecord[i].type);
-			console.log("attributeName : ", mutationRecord[i].attributeName);
-			console.log("oldValue : ", mutationRecord[i].oldValue);
+			//console.log("target : ", mutationRecord[i].target);
+			//console.log("type : ", mutationRecord[i].type);
+			//console.log("attributeName : ", mutationRecord[i].attributeName);
+			//console.log("oldValue : ", mutationRecord[i].oldValue);
 		}
 		const testClassVar = new PageElementState();
 
 		console.log("Output %o", testClassVar);
-  
+
 		//var element = (<HTMLElement>document.getElementById('buttonExample'));
-  
+
 		//if( element != null ) {
-		  var directRect = mutationRecord[0].target.getBoundingClientRect();
-  
-		  console.log("Element Bounding by name is %o", {
-			  top: directRect.top,
-			  right: directRect.right,
-			  bottom: directRect.bottom,
-			  left: directRect.left,
-			  width: directRect.width,
-			  height: directRect.height
-			  } );	
-  
-		  testClassVar.UserVars.push({
-			  "Name" : "BoundingRect", 
-			  "Value" : JSON.stringify({
-				  top: directRect.top,
-				  right: directRect.right,
-				  bottom: directRect.bottom,
-				  left: directRect.left,
-				  width: directRect.width,
-				  height: directRect.height
-			  })
-		  });
-		  testClassVar.Action = PageElementState.PageElementStateAction.ACTION_UPDATE;
-		  testClassVar.Status = PageElementState.PageElementStateStatus.STATUS_UPDATED;
-  
-		  // fill the request and send it back
-		  sld.SendMessageToApp(JSON.stringify(testClassVar));
+		var directRect = mutationRecord[0].target.getBoundingClientRect();
+
+		console.log("Element Bounding by name is %o", {
+			top: directRect.top,
+			right: directRect.right,
+			bottom: directRect.bottom,
+			left: directRect.left,
+			width: directRect.width,
+			height: directRect.height
+		} );	
+
+		testClassVar.UserVars.push({
+			"Name" : "BoundingRect", 
+			"Value" : JSON.stringify({
+				top: directRect.top,
+				right: directRect.right,
+				bottom: directRect.bottom,
+				left: directRect.left,
+				width: directRect.width,
+				height: directRect.height
+			})
+		});
+		testClassVar.Action = PageElementState.PageElementStateAction.ACTION_UPDATE;
+		testClassVar.Status = PageElementState.PageElementStateStatus.STATUS_UPDATED;
+
+		// fill the request and send it back
+		sld.SendMessageToApp(JSON.stringify(testClassVar));
 
 	}
 
@@ -437,15 +459,16 @@ export class MapsComponent implements OnInit {
 	const config = {
 		childList: true,
 		attributes: true,
-		attributeOldValue: true,
-		characterData: true,
+		characterData:true,
 		subtree: true,
+		attributeOldValue: true,
+		characterDataOldValue:true
 	};
 
 	// When everything is ready, we just observe our target
 	observer.observe(target, config);
   }
-  
+
   setProcessId(processId:number ): void{
     this.lastProcessId = processId;
   }
