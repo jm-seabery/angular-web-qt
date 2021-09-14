@@ -358,7 +358,44 @@ class PageElementState {
 	}
 }
 // ####################################################################################
+// status 
+enum SoldamaticExerciseStateStatus {
+	STATUS_LOADED				= "Loaded",
+	STATUS_NOTLOADED			= "NotLoaded"
+}
 
+// Action 
+enum SoldamaticExerciseStateAction {
+	ACTION_LOAD 				= "Load",
+}
+
+class SoldamaticExerciseState {
+
+	// constant api call name
+	static readonly API_CALL_NAME		= "SoldamaticExerciseState";
+
+	private Call:string = SoldamaticExerciseState.API_CALL_NAME;	/// required - Should be 'SoldamaticExerciseState'
+
+	ExerciseData:string;
+
+	static readonly SoldamaticExerciseStateStatus = SoldamaticExerciseStateStatus;
+  	readonly SoldamaticExerciseStateStatus = SoldamaticExerciseState.SoldamaticExerciseStateStatus;
+
+	static readonly SoldamaticExerciseStateAction = SoldamaticExerciseStateAction;
+  	readonly SoldamaticExerciseStateAction = SoldamaticExerciseState.SoldamaticExerciseStateAction;
+
+	Status:SoldamaticExerciseStateStatus;
+	Action:SoldamaticExerciseStateAction;
+
+	UserVars = [
+	];
+
+	// FIXME: this undoes type safety but does work
+	constructor(values: Object = {}) {
+		Object.assign(this, values);
+	}
+}
+// ####################################################################################
 @Component({
   selector: 'app-maps',
   templateUrl: './maps.component.html',
@@ -375,14 +412,14 @@ export class MapsComponent implements OnInit {
     example1URL;
     example2URL;
     example3URL;
-    constructor(private sanitizer: DomSanitizer, activeRoute: ActivatedRoute) {
+    constructor(private sanitizer: DomSanitizer/*, activeRoute: ActivatedRoute*/) {
         this.example1URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/s4LAAYHnbn0?ecver=2');
         this.example2URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/X8hBKX2lgn4?ecver=2');
         this.example3URL = sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/OWThL97tq3k?ecver=2');
   
-		activeRoute.params.subscribe(val => {
-			this.trackComponent();
-		});
+		//activeRoute.params.subscribe(val => {
+		//	this.trackComponent();
+		//});
 
         // register functions the c++ side can call to the local class functions
         (window as any).RegisterJavascriptFunction("ApplicationToWebMessage", (msg:any) => {
@@ -641,6 +678,22 @@ export class MapsComponent implements OnInit {
 		console.log("Element Offset is %o", testOfffset );
   }
 
+  onSoldamaticExerciseStateExample(event: any) {
+    const testClassVar = new SoldamaticExerciseState();
+    testClassVar.Action = SoldamaticExerciseState.SoldamaticExerciseStateAction.ACTION_LOAD;
+    testClassVar.UserVars.push({
+        "Name" : "SoldamaticExerciseState", 
+        "Value" : "This is a soldamatic exercise state request"
+    });
+	testClassVar.ExerciseData = JSON.stringify({
+		"WPSName" : "WPS-Exercise", 
+		"Test" : "OneTwoThree"
+	});
+
+    sld.SendMessageToApp(JSON.stringify(testClassVar));
+    
+  }
+
   NativeMessage(msg) {
     var nativeMsg = JSON.parse(msg);
     //console.log("%o", nativeMsg);
@@ -756,5 +809,12 @@ export class MapsComponent implements OnInit {
 	//	sld.SendMessageToApp(JSON.stringify(testClassVar));
 	//} 
   }
+
+  	
+  if( nativeMsg.Call == SoldamaticExerciseState.API_CALL_NAME)
+  {
+	const testClassVar = new SoldamaticExerciseState(nativeMsg);
+	console.log("Output %o", testClassVar);
+  } 
  }
 } 
