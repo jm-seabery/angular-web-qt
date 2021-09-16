@@ -10,6 +10,47 @@
             <p>Your browser does not support iframes.</p>
         </iframe>
     </div> 
+    <div class="row">
+      <div class="col-lg-4 text-right">
+        <div id="CameraMain" class="card card-chart">
+          <div class="card-header">
+            <h5 class="card-category">Main</h5>
+            <h3 class="card-title"><i class="tim-icons icon-bell-55 text-danger-states"></i></h3>
+          </div>
+          <div class="card-body">
+            <div class="chart-area">
+              <canvas id=""></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 text-right">
+        <div id="CameraAux" class="card card-chart">
+          <div class="card-header">
+            <h5 class="card-category">Aux</h5>
+            <h3 class="card-title"><i class="tim-icons icon-delivery-fast text-info"></i></h3>
+          </div>
+          <div class="card-body">
+            <div class="chart-area">
+              <canvas id=""></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 text-right">
+        <div id="CameraMask" class="card card-chart">
+          <div class="card-header">
+            <h5 class="card-category">Mask</h5>
+            <h3 class="card-title"><i class="tim-icons icon-send text-success"></i></h3>
+          </div>
+          <div class="card-body">
+            <div class="chart-area">
+              <canvas id=""></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div #FileStateDiv id="example" class="example-button-container" >
         <button mat-raised-button color="primary" (click)="onFileStateExample($event);">Test FileState</button>
      </div>
@@ -42,8 +83,9 @@
          <button mat-raised-button color="primary" (click)="onDeviceDetailsExample($event);">Test Device Details State</button>
    </div>  
    <div class="example-button-container" >
-      <button id="buttonExample" mat-raised-button color="primary" (click)="onElementPositionExample($event);">Test Element Position</button>
+      <button mat-raised-button color="primary" (click)="onElementPositionExample($event);">Test Element Position</button>
    </div>  
+
    <div class="example-button-container" >
       <button mat-raised-button color="primary" (click)="onSoldamaticExerciseStateExample($event);">Test Soldamatic Exercise State</button>
    </div>  

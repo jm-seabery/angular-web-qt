@@ -428,15 +428,50 @@ export class MapsComponent implements OnInit {
       }
 
   ngOnInit() {
-	this.trackComponent();
+	//this.trackComponent();
         // ...
         //this.paramsSub = this.activeRoute.params.subscribe(val => {
             // Handle param values here
         //});		
+	setInterval((params:any) => { this.cameraElementUpdateFunction(params); }, 50);
   }
   
   ngAfterViewInit() {
 
+  }
+
+  cameraElementUpdateFunction(params:any) {
+
+	this.cameraElementUpdate("CameraMain");
+	this.cameraElementUpdate("CameraAux");
+	this.cameraElementUpdate("CameraMask");
+
+  }
+
+  cameraElementUpdate(name:string){
+	const target = document.getElementById(name);
+
+	if(target){
+		const testClassVar = new PageElementState();
+
+		var directRect = target.getBoundingClientRect();
+		testClassVar.UserVars.push({
+			"Name" : name, 
+			"Value" : JSON.stringify({
+				top: directRect.top,
+				right: directRect.right,
+				bottom: directRect.bottom,
+				left: directRect.left,
+				width: directRect.width,
+				height: directRect.height
+			})
+		});
+		testClassVar.Action = PageElementState.PageElementStateAction.ACTION_UPDATE;
+		testClassVar.Status = PageElementState.PageElementStateStatus.STATUS_UPDATED;
+
+		// fill the request and send it back
+		sld.SendMessageToApp(JSON.stringify(testClassVar));
+	}
   }
 
   trackComponent() {
